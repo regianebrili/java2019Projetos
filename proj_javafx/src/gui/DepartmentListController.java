@@ -88,6 +88,7 @@ public class DepartmentListController implements Initializable {
 			// inserir o obj no controlador
 			DepartmentFormController controller = loader.getController();  // pega o controlador da tela informada no parâmetro
 			controller.setDepartment(obj);
+			controller.setDepartmentService(new DepartmentService());
 			controller.updateFormDate(); // carrega os dados no obj para informar na tela
 			
 			Stage dialogStage = new Stage();  // precisa instanciar um novo stage para que a tela fique modal (na frente da tela anterior)
