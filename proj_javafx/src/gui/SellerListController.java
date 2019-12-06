@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -105,28 +110,28 @@ public class SellerListController implements Initializable, DataChangeListener {
 	
 	// carrega a janela para cadastrar um novo departamento
 	private void createDialogForm(Seller obj, String absoluteName, Stage parentStage) {
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));  // carrega a view informada no absoluteName
-//			Pane pane = loader.load();  // carrega a view
-//			
-//			// inserir o obj no controlador
-//			SellerFormController controller = loader.getController();  // pega o controlador da tela informada no parâmetro
-//			controller.setSeller(obj);
-//			controller.setSellerService(new SellerService());
-//			controller.subscribeDataChangeListener(this);  // chama o listener para monitorar essa classe
-//			controller.updateFormDate(); // carrega os dados no obj para informar na tela
-//			
-//			Stage dialogStage = new Stage();  // precisa instanciar um novo stage para que a tela fique modal (na frente da tela anterior)
-//			dialogStage.setTitle("Enter Seller data");  // título da janela
-//			dialogStage.setScene(new Scene(pane));  // cria uma nova scena, já que é outro stage
-//			dialogStage.setResizable(false);  // pode ou não ser redimencionada
-//			dialogStage.initOwner(parentStage);	// quem é o stage pai da janela
-//			dialogStage.initModality(Modality.WINDOW_MODAL);  // é modal -> trava a janela, enquanto não for fechada não acessa a anterior
-//			dialogStage.showAndWait();
-//		}
-//		catch (IOException e) {
-//			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));  // carrega a view informada no absoluteName
+			Pane pane = loader.load();  // carrega a view
+			
+			// inserir o obj no controlador
+			SellerFormController controller = loader.getController();  // pega o controlador da tela informada no parâmetro
+			controller.setSeller(obj);
+			controller.setSellerService(new SellerService());
+			controller.subscribeDataChangeListener(this);  // chama o listener para monitorar essa classe
+			controller.updateFormDate(); // carrega os dados no obj para informar na tela
+			
+			Stage dialogStage = new Stage();  // precisa instanciar um novo stage para que a tela fique modal (na frente da tela anterior)
+			dialogStage.setTitle("Enter Seller data");  // título da janela
+			dialogStage.setScene(new Scene(pane));  // cria uma nova scena, já que é outro stage
+			dialogStage.setResizable(false);  // pode ou não ser redimencionada
+			dialogStage.initOwner(parentStage);	// quem é o stage pai da janela
+			dialogStage.initModality(Modality.WINDOW_MODAL);  // é modal -> trava a janela, enquanto não for fechada não acessa a anterior
+			dialogStage.showAndWait();
+		}
+		catch (IOException e) {
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
