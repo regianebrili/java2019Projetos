@@ -16,6 +16,8 @@ public class Alerts {
 		alert.show();
 	}
 
+	
+	// Alerta de Confirmação que será utilizado ao ser clicado em apagar o registro.
 	public static Optional<ButtonType> showConfirmation(String title, String content){
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);

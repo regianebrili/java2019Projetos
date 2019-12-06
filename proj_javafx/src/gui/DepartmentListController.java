@@ -143,6 +143,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		});
 	}
 	
+	// Cria um botão chamado Remove em cada linha. No clicar ele chama o método removeEntity.
 	private void initRemoveButtons() {
 		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnRemove.setCellFactory(param -> new TableCell<Department, Department>() {
@@ -162,13 +163,18 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	}
 	
 	private void removeEntity(Department obj) {
+		// mostra um alert para o usuário confirmar se quer apagar o registro. O resultado é o botão clicado que vai para a variável result
 		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?");
+		
+		// o Optional armazena um outro objeto que pode estar presente ou não, e para pegar esse valor utiliza-se o .get()
 		if (result.get() == ButtonType.OK) {
+			// se confirmado vai chamar o service.remove(obj), mas pode ter excessão, então tem que ser tratada.
 			if (service == null) {
 				throw new IllegalStateException("Service was null");
 			}
 			try {
 				service.remove(obj);
+				// depois de removido atualiza a tabela
 				updateTableView();
 			}
 			catch (DbIntegrityException e) {
