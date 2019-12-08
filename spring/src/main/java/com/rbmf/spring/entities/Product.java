@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tb_product")
@@ -26,7 +28,10 @@ public class Product implements Serializable {
 	private Double price;
 	private String imgUrl;
 	
-	@Transient
+	@ManyToMany
+	@JoinTable(name = "tb_product_category",  // tabela que será o relacionamento entre product e category
+	joinColumns = @JoinColumn(name = "product_id"),   // campo que armazenará a chave do product
+	inverseJoinColumns = @JoinColumn(name = "category_id"))  // campo que armazenará a chave da outra tabela (category)
 	private Set<Category> categories = new HashSet<>();   // Set é uma lista de um conjunto e garante que não vamos ter um produto pertencendo à mesma categoria duas vezes
 	// instancia para garantir que a categoria não comece valendo null
 	// Set é uma interface, para instanciar precisa usar uma classe, que no caso é a HashSet, da mesma forma que o List usa o ArrayList
