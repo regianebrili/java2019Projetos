@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.rbmf.spring.entities.User;
 import com.rbmf.spring.repositories.UserRepository;
+import com.rbmf.spring.services.exceptions.ResourceNotFoundException;
 
 //  @Component   // registra a classe como um componente do spring e poderá ser injetado automaticamente com o @Autowired
 //  @Repository  // registra um repositório
@@ -24,7 +25,7 @@ public class UserService {
 	
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	// salvar o usuário no banco
