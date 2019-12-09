@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_product")
@@ -30,12 +33,18 @@ public class Product implements Serializable {
 	
 	@ManyToMany
 	@JoinTable(name = "tb_product_category",  // tabela que será o relacionamento entre product e category
-	joinColumns = @JoinColumn(name = "product_id"),   // campo que armazenará a chave do product
-	inverseJoinColumns = @JoinColumn(name = "category_id"))  // campo que armazenará a chave da outra tabela (category)
+			   joinColumns = @JoinColumn(name = "product_id"),   // campo que armazenará a chave do product
+			   inverseJoinColumns = @JoinColumn(name = "category_id"))  // campo que armazenará a chave da outra tabela (category)
 	private Set<Category> categories = new HashSet<>();   // Set é uma lista de um conjunto e garante que não vamos ter um produto pertencendo à mesma categoria duas vezes
 	// instancia para garantir que a categoria não comece valendo null
 	// Set é uma interface, para instanciar precisa usar uma classe, que no caso é a HashSet, da mesma forma que o List usa o ArrayList
 	
+
+	@OneToMany(mappedBy = "id.product")
+	private Set<OrderItem> items = new HashSet<>();
+	
+	
+
 	public Product() {
 	}
 	public Product(Long id, String name, String description, Double price, String imgUrl) {
@@ -79,6 +88,16 @@ public class Product implements Serializable {
 	public Set<Category> getCategories() {
 		return categories;
 	}
+	
+	@JsonIgnore
+	public Set<Order> getOrders() {
+		Set<Order> set = new HashSet<>();
+		for (OrderItem x : items) {
+			set.add(x.getOrder());
+		}
+		return set;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
