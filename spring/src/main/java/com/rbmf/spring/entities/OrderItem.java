@@ -64,6 +64,12 @@ public class OrderItem implements Serializable {
 	public void setProduct(Product product) {
 		id.setProduct(product);
 	}
+	
+	// método que devolve um Double que será um subtotal  --  no Java EE o que vale é o Get, então para aparecer tem que ser getSubTotal
+	public Double getSubTotal() {
+		return price * quantity;
+	}
+	
 
 	@Override
 	public int hashCode() {
