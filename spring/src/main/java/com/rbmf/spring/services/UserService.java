@@ -3,6 +3,8 @@ package com.rbmf.spring.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -49,9 +51,13 @@ public class UserService {
 	
 	// atualizar o usuário
 	public User update(Long id, User obj) {
-		User entity = repository.getOne(id);
-		updateData(entity, obj);   // chama a funçao que vai fazer a atualização de cada campo
-		return repository.save(entity);
+		try {
+			User entity = repository.getOne(id);
+			updateData(entity, obj);   // chama a funçao que vai fazer a atualização de cada campo
+			return repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	// método que atualiza cada um dos dados com o obj enviado
