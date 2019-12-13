@@ -30,6 +30,11 @@ public class UserService {
 		return repo.insert(obj);
 	}
 	
+	public void delete(String id) {
+		findById(id);	// utiliza o método para confirmar a existência do id, se não existir, já retorna o erro
+		repo.deleteById(id);
+	}
+	
 	// é melhor colocar no UserService e não no UserDTO, pq dependendo da situação, para instanciar um user, pode ser necessário acessar o banco de dados
 	// e quem tem a dependência para o acesso é o UserService, sendo assim, prevendo um futuro, é melhor colocar aqui.
 	public User fromDTO(UserDTO objDto) {		// vai pegar o DTO e instanciar em um obj (ao contrário da classe DTO)
