@@ -1,14 +1,18 @@
 package com.rbmf.mongodb.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rbmf.mongodb.domain.User;
 import com.rbmf.mongodb.dto.UserDTO;
@@ -38,5 +42,17 @@ public class UserResource {
 	public ResponseEntity<UserDTO> findById(@PathVariable String id) {		//@PathVariable usada para que esse id bata com o id do caminho
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(new UserDTO(obj));		//converte o obj para UserDTO
+	}
+	
+	
+	// inserir novo usuário
+	@RequestMapping(method = RequestMethod.POST)  // @PostMapping tb pode ser usado
+	public ResponseEntity<Void> insert(@RequestBody UserDTO objDto) {
+		User obj = (service.fromDTO(objDto));		// converte o dto para user
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		// retorna o caminho com o novo dado
+		
+		return ResponseEntity.created(uri).build();
 	}
 }
