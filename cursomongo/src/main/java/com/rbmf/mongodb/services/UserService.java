@@ -35,6 +35,17 @@ public class UserService {
 		repo.deleteById(id);
 	}
 	
+	public User update(User obj) {
+		User newObj = findById(obj.getId());	// busca o obj que foi digitado pelo usuário no banco de dados
+		updateData(newObj, obj);				// responsável por copiar os dados digitados no banco de dados
+		return repo.save(newObj);
+	}
+	
+	public void updateData(User newObj, User obj) {
+		newObj.setName(obj.getName());
+		newObj.setEmail(obj.getEmail());
+	}
+	
 	// é melhor colocar no UserService e não no UserDTO, pq dependendo da situação, para instanciar um user, pode ser necessário acessar o banco de dados
 	// e quem tem a dependência para o acesso é o UserService, sendo assim, prevendo um futuro, é melhor colocar aqui.
 	public User fromDTO(UserDTO objDto) {		// vai pegar o DTO e instanciar em um obj (ao contrário da classe DTO)
