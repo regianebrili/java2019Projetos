@@ -35,4 +35,9 @@ public class Board {
 	public Piece piece(Position position) {			// sobrecarga do método, retornando a peça pela posição
 		return pieces[position.getRow()][position.getColumn()];
 	}
+	
+	public void placePiece(Piece piece, Position position) {
+		pieces[position.getRow()][position.getColumn()] = piece;  // atribui nessa posição (linha, coluna) a peça informada
+		piece.position = position;	// a posição da peça recebe o position informado no parâmetro
+	}
 }
