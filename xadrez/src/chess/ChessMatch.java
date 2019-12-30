@@ -8,11 +8,23 @@ import chess.pieces.Rook;
 
 public class ChessMatch {
 	
+	private int turn;
+	private Color currentPlayer;
 	private Board board;
 
 	public ChessMatch() {
 		board = new Board(8, 8);	// o board vai receber um novo board nas posições 8 x 8
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		initialSetup();
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public Color getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	// retorna uma matriz de peças de xadrez corespondente a partida
@@ -39,6 +51,7 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (ChessPiece)capturedPiece;
 	}
 
@@ -53,6 +66,10 @@ public class ChessMatch {
 		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
 		}
+		// se a cor atual for diferente do board.piece (tem que fazer um down casting) da cor a ser movimentada
+		if (currentPlayer != ((ChessPiece)board.piece(position)).getColor()) {
+			throw new ChessException("The chosen piece is not yours");
+		}
 		if (!board.piece(position).isThereAnyPossibleMove()) {	// se não tiver movimento possível, gera a exceção
 			throw new ChessException("There is no possible moves for the chosen piece");
 		}
@@ -62,6 +79,12 @@ public class ChessMatch {
 		if (!board.piece(source).possibleMove(target)) {		// se para a peça de origem a posição de destino não é possível, gera uma exceção
 			throw new ChessException("The chosen piece can't move to target position");
 		}
+	}
+	
+	private void nextTurn() {
+		turn++;		// incrementa o turno
+		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;		// altera o jogador atual
+						// se o jogador atual for branco, ele passa a ser preço, se não, ele será branco
 	}
 	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {

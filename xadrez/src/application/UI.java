@@ -3,6 +3,7 @@ package application;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
@@ -46,6 +47,13 @@ public class UI {
 		catch (RuntimeException e) {
 			throw new InputMismatchException("Error reading ChessPosition. Valid values are from a1 to h8.");
 		}
+	}
+	
+	public static void printMatch(ChessMatch chessMatch) {
+		printBoard(chessMatch.getPieces());		// imprime o tabuleiro
+		System.out.println();					// quebra de linha
+		System.out.println("Turn : " + chessMatch.getTurn());		// imprime o turno
+		System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());		// mensagem aguardando o jogador da cor tal
 	}
 	
 	// imprimir o tabuleiro no formato desejado
