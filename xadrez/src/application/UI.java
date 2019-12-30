@@ -59,6 +59,9 @@ public class UI {
 		System.out.println();
 		System.out.println("Turn : " + chessMatch.getTurn());		// imprime o turno
 		System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());		// mensagem aguardando o jogador da cor tal
+		if (chessMatch.getCheck()) {
+			System.out.println("CHECK!");
+		}
 	}
 	
 	// imprimir o tabuleiro no formato desejado
