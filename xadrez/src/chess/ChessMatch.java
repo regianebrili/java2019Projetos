@@ -1,5 +1,6 @@
 package chess;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class ChessMatch {
 	private boolean check;
 	private boolean checkMate;
 	private ChessPiece enPassantVulnerable;
+	private ChessPiece promoted;
 	
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -52,6 +54,11 @@ public class ChessMatch {
 	public ChessPiece getEnPassantVulnerable() {
 		return enPassantVulnerable;
 	}
+	
+	public ChessPiece getPromoted() {
+		return promoted;
+	}
+
 
 	// retorna uma matriz de peças de xadrez corespondente a partida
 	public ChessPiece[][] getPieces() {
@@ -85,6 +92,20 @@ public class ChessMatch {
 		
 		ChessPiece movedPiece = (ChessPiece)board.piece(target);
 		
+		// Movimento especial Promoção (#specialmove promotion)
+		// tem que ser testado antes do check, pois a nova peça pode causar o check
+		promoted = null;
+		// se a peça movida foi um peão
+		if (movedPiece instanceof Pawn) {
+			// se a peça movida for branca e o local de destino é 0 OU se a peça for preta e o local de destino é 7, então ela chegou no final
+			if ((movedPiece.getColor() == Color.WHITE && target.getRow() == 0) || (movedPiece.getColor() == Color.BLACK && target.getRow() == 7)) {
+				// peça promovida foi o peão que chegou no final
+				promoted = (ChessPiece)board.piece(target);
+				// troca a peça promovida por uma peça maior, por padrão será a rainha (Q)
+				promoted = replacePromotedPiece("Q");
+			}
+		}
+		
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 		
 		if (testCheckMate(opponent(currentPlayer))) {
@@ -104,6 +125,39 @@ public class ChessMatch {
 		}
 		
 		return (ChessPiece)capturedPiece;
+	}
+	
+	// método para trocar a peça promovida no movimento Promoção
+	public ChessPiece replacePromotedPiece(String type) {
+		if (promoted == null) {
+			throw new IllegalStateException("There is no piece to be promoted");
+		}
+		// se existe uma peça a ser promovida, verifica se a letra escolhida é um bispo, cavalo, torre ou rainha
+		if (!type.equals("B") && !type.equals("N") && !type.equals("R") & !type.equals("Q")) {
+			throw new InvalidParameterException("Invalid type for promotion");
+		}
+
+		// remove a peça da posição
+		Position pos = promoted.getChessPosition().toPosition();
+		Piece p = board.removePiece(pos);
+		piecesOnTheBoard.remove(p);
+
+		// instancia uma nova peça conforme a escolhida
+		ChessPiece newPiece = newPiece(type, promoted.getColor());
+		// coloca a nova peça na posição da peça promovida
+		board.placePiece(newPiece, pos);
+		// adiciona a nova peça na lista do tabuleiro
+		piecesOnTheBoard.add(newPiece);
+
+		return newPiece;
+	}
+
+	// método para instanciar uma nova peça conforme a letra escolhida
+	private ChessPiece newPiece(String type, Color color) {
+		if (type.equals("B")) return new Bishop(board, color);
+		if (type.equals("N")) return new Knight(board, color);
+		if (type.equals("Q")) return new Queen(board, color);
+		return new Rook(board, color);
 	}
 
 	private Piece makeMove(Position source, Position target) {
